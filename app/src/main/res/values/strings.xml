@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">TODOApp</string>
+    <string name="done">Zrobione</string>
+</resources>
