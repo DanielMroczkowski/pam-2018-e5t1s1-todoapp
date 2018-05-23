@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,9 +23,10 @@ import java.util.List;
 import pl.wat.e5t1s1.todoapp.db.TaskContract;
 import pl.wat.e5t1s1.todoapp.db.TaskDbHelper;
 
+
 public class MainActivity extends AppCompatActivity {
 
-    private ArrayAdapter<String> mAdapter;
+    private ToDoAdapter mAdapter;
     RecyclerView mTaskListView;
 
     private TaskDbHelper mHelper;
@@ -87,11 +89,11 @@ public class MainActivity extends AppCompatActivity {
                                         values,
                                         SQLiteDatabase.CONFLICT_REPLACE);
                                 db.close();
+                                updateUI();
                             }
                         })
                         .setNegativeButton("Anuluj", null)
                         .create();
-                updateUI();
                 dialog.show();
             }
         });
@@ -99,22 +101,24 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void updateUI() {
-        ArrayList<String> taskList = new ArrayList<>();
+
+        ArrayList<Task> taskList = new ArrayList<>();
+
         SQLiteDatabase db = mHelper.getReadableDatabase();
         Cursor cursor = db.query(TaskContract.TaskEntry.TABLE,
                 new String[]{TaskContract.TaskEntry._ID, TaskContract.TaskEntry.COL_TASK_TITLE},
                 null, null, null, null, null);
         while (cursor.moveToNext()) {
             int idx = cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_TITLE);
-            taskList.add(cursor.getString(idx));
+            //int idtext = cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_TITLE);
+            taskList.add(new Task(cursor.getString(idx), ""));
         }
 
         if (mAdapter == null) {
-            mAdapter = new ArrayAdapter<>(MainActivity.this,
-                    R.layout.position,
-                    R.id.task_title,
-                    taskList);
-            //mTaskListView.setAdapter(mAdapter);
+            mAdapter = new ToDoAdapter(taskList);
+            mTaskListView.setAdapter(mAdapter);
+
+            mTaskListView.setLayoutManager(new LinearLayoutManager(this));
         } else {
             mAdapter.clear();
             mAdapter.addAll(taskList);
