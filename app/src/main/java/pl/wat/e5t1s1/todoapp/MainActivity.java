@@ -2,6 +2,7 @@ package pl.wat.e5t1s1.todoapp;
 
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -141,5 +142,7 @@ public class MainActivity extends AppCompatActivity {
         updateUI();
     }
 
-
+    public void editTask(View view) {
+        startActivity(new Intent(MainActivity.this, PositionEditActivity.class));
+    }
 }
