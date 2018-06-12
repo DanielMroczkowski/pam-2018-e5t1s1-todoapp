@@ -1,6 +1,4 @@
-# Tytuł projektu
-
-TODOApp
+# TODOApp
 
 ## Wprowadzenie
 
