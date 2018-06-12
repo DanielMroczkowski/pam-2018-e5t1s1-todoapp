@@ -1,11 +1,14 @@
 package pl.wat.e5t1s1.todoapp;
 
+import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AlertDialog;
@@ -61,23 +64,12 @@ public class MainActivity extends AppCompatActivity {
 
         gestureObject = new GestureDetectorCompat(this, new LearnGesture());
 
-
-        SQLiteDatabase db = mHelper.getReadableDatabase();
-        Cursor cursor = db.query(TaskContract.TaskEntry.TABLE,
-                new String[]{TaskContract.TaskEntry._ID, TaskContract.TaskEntry.COL_TASK_TITLE},
-                null, null, null, null, null);
-
-        while(cursor.moveToNext()) {
-            int idx = cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_TITLE);
-            Log.d(TAG, "Task: " + cursor.getString(idx));
-        }
-        cursor.close();
-        db.close();
         updateUI();
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
 
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View view) {
                 /**
@@ -88,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
                  */
                 final EditText taskEditText = new EditText(MainActivity.this);
                 AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                        .setIcon(R.drawable.ic_dialog)
                         .setTitle("Nowe zadanie")
                         .setMessage("Co planujesz?")
                         .setView(taskEditText)
@@ -123,7 +116,12 @@ public class MainActivity extends AppCompatActivity {
 
                 //Toast.makeText(MainActivity.this,"swipeniete"+direction,Toast.LENGTH_SHORT).show();
                 if(direction==8){
-                    startActivity(new Intent(MainActivity.this, PositionEditActivity.class));
+                    TextView taskIdHolder = viewHolder.itemView.findViewById(R.id.task_id);
+
+                    Intent intent = new Intent(MainActivity.this, PositionEditActivity.class);
+                    int taskId = Integer.parseInt(taskIdHolder.getText().toString());
+                    intent.putExtra("taskId", taskId);
+                    startActivity(intent);
                 }else if(direction==4){
                     deleteTask(viewHolder.itemView);
                 }
@@ -159,18 +157,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     private void updateUI() {
 
         ArrayList<Task> taskList = new ArrayList<>();
 
         SQLiteDatabase db = mHelper.getReadableDatabase();
+
         Cursor cursor = db.query(TaskContract.TaskEntry.TABLE,
                 new String[]{TaskContract.TaskEntry._ID, TaskContract.TaskEntry.COL_TASK_TITLE},
                 null, null, null, null, null);
         while (cursor.moveToNext()) {
-            int idx = cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_TITLE);
+            //int idx = cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_TITLE);
             //int idtext = cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_TITLE);
-            taskList.add(new Task(cursor.getString(idx), ""));
+            taskList.add(new Task(cursor.getInt(cursor.getColumnIndex(TaskContract.TaskEntry._ID)),
+                                  cursor.getString(cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_TITLE)),
+                                  ""));
         }
 
         if (mAdapter == null) {
@@ -191,12 +193,12 @@ public class MainActivity extends AppCompatActivity {
     public void deleteTask(View view) {
         //View parent = (View) view.getParent();
         //TextView taskTextView = parent.findViewById(R.id.task_title);
-        TextView taskTextView = view.findViewById(R.id.task_title);
-        String task = String.valueOf(taskTextView.getText());
+        TextView taskTextView = view.findViewById(R.id.task_id);
+        int task_id = Integer.parseInt(taskTextView.getText().toString());
         SQLiteDatabase db = mHelper.getWritableDatabase();
         db.delete(TaskContract.TaskEntry.TABLE,
-                TaskContract.TaskEntry.COL_TASK_TITLE + " = ?",
-                new String[]{task});
+                TaskContract.TaskEntry._ID + "=" + task_id,
+                null);
         db.close();
         updateUI();
     }

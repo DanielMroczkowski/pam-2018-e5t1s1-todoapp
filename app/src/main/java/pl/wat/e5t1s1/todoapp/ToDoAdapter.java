@@ -36,8 +36,8 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ToDoAdapter.ViewHolder holder, int position) {
         // 5. ustaw treści w wierszu 'position'
+        holder.taskId.setText(String.valueOf(taskList.get(position).getId()));
         holder.taskTitle.setText(taskList.get(position).getTitle());
-        //holder..setText(taskList.get(position).getText());
     }
 
     @Override
@@ -55,13 +55,13 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
+        TextView taskId;
         TextView taskTitle;
-        //Button taskDelete;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            taskId = itemView.findViewById(R.id.task_id);
             taskTitle = itemView.findViewById(R.id.task_title);
-            //taskDelete = itemView.findViewById(R.id.task_delete);
         }
     }
 }
