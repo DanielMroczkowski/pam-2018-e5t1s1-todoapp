@@ -15,6 +15,6 @@ public class PositionEditActivity extends AppCompatActivity {
     }
 
     public void onSaveClick(View view) {
-        setContentView();
+
     }
 }

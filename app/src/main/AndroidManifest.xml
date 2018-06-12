@@ -18,8 +18,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CalendarActivity"></activity>
-        <activity android:name=".PositionEditActivity"></activity>
+        <activity
+            android:name=".CalendarActivity"
+            android:theme="@style/AppTheme.Children"
+            android:parentActivityName=".MainActivity">
+        </activity>
+        <activity
+            android:name=".PositionEditActivity"
+            android:theme="@style/AppTheme.Children"
+            android:parentActivityName=".MainActivity">
+        </activity>
     </application>
 
 </manifest>

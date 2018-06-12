@@ -56,12 +56,12 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView taskTitle;
-        Button taskDelete;
+        //Button taskDelete;
 
         public ViewHolder(View itemView) {
             super(itemView);
             taskTitle = itemView.findViewById(R.id.task_title);
-            taskDelete = itemView.findViewById(R.id.task_delete);
+            //taskDelete = itemView.findViewById(R.id.task_delete);
         }
     }
 }
