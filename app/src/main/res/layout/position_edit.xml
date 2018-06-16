@@ -10,27 +10,60 @@
         android:id="@+id/editTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
-         />
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="15dp" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="TYTUŁ" />
+
+    <EditText
+        android:id="@+id/editNote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:inputType="textMultiLine" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="NOTATKA" />
+        android:text="OPIS" />
 
-    <EditText
-        android:id="@+id/editNote"
+    <DatePicker
+        android:id="@+id/editDatePicker"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:calendarViewShown="false"
+        android:datePickerMode="spinner" />
+
+
+    <TimePicker
+        android:id="@+id/editTimePicker"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:timePickerMode="spinner" />
+
+
+    <Switch
+        android:id="@+id/swAlarm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
-        android:text="Notatka do zadania"/>
+        android:layout_marginLeft="90dp"
+        android:layout_marginRight="90dp"
+        android:text="ALARM" />
 
     <Button
         android:id="@+id/editSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
         android:onClick="onSaveClick"
         android:text="Zapisz" />
 

@@ -10,6 +10,9 @@ public class TaskContract {
             public static final String TABLE = "tasks";
 
             public static final String COL_TASK_TITLE = "title";
+            public static final String COL_TASK_DATE = "date";
+            public static final String COL_TASK_TIME = "time";
+            public static final String COL_TASK_ALARM = "alarm";
             public static final String COL_TASK_TEXT = "text";
         }
     }

@@ -19,13 +19,19 @@ import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ArrayAdapter;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         updateUI();
 
         FloatingActionButton fab = findViewById(R.id.fab);
+
         fab.setOnClickListener(new View.OnClickListener() {
 
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -78,19 +85,28 @@ public class MainActivity extends AppCompatActivity {
                  * @param item
                  * @return boolean
                  */
-                final EditText taskEditText = new EditText(MainActivity.this);
+                LayoutInflater inflater = getLayoutInflater();
+                final View alertLayout = inflater.inflate(R.layout.add_dialog, null);
+                final EditText Title = alertLayout.findViewById(R.id.addTitle);
+                final EditText Text = alertLayout.findViewById(R.id.addNote);
+                final DatePicker Date = alertLayout.findViewById(R.id.addDatePicker);
+                final TimePicker Time = alertLayout.findViewById(R.id.addTimePicker);
+                final Switch Alarm = alertLayout.findViewById(R.id.addAlarm);
+                Time.setIs24HourView(true);
                 AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
                         .setIcon(R.drawable.ic_dialog)
                         .setTitle("Nowe zadanie")
-                        .setMessage("Co planujesz?")
-                        .setView(taskEditText)
+                        .setView(alertLayout)
                         .setPositiveButton("Dodaj", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                String task = String.valueOf(taskEditText.getText());
                                 SQLiteDatabase db = mHelper.getWritableDatabase();
                                 ContentValues values = new ContentValues();
-                                values.put(TaskContract.TaskEntry.COL_TASK_TITLE, task);
+                                values.put(TaskContract.TaskEntry.COL_TASK_TITLE, Title.getText().toString());
+                                values.put(TaskContract.TaskEntry.COL_TASK_TEXT, Text.getText().toString());
+                                values.put(TaskContract.TaskEntry.COL_TASK_DATE, Date.getYear()+"-"+Date.getMonth()+"-"+Date.getDayOfMonth());
+                                values.put(TaskContract.TaskEntry.COL_TASK_TIME, Time.getHour()+":"+Time.getMinute());
+                                values.put(TaskContract.TaskEntry.COL_TASK_ALARM, (Alarm.isChecked()) ? 1 : 0);
                                 db.insertWithOnConflict(TaskContract.TaskEntry.TABLE,
                                         null,
                                         values,
@@ -118,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
                 if(direction==8){
                     TextView taskIdHolder = viewHolder.itemView.findViewById(R.id.task_id);
 
-                    Intent intent = new Intent(MainActivity.this, PositionEditActivity.class);
+                    Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
                     int taskId = Integer.parseInt(taskIdHolder.getText().toString());
                     intent.putExtra("taskId", taskId);
                     startActivity(intent);
@@ -172,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
             //int idtext = cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_TITLE);
             taskList.add(new Task(cursor.getInt(cursor.getColumnIndex(TaskContract.TaskEntry._ID)),
                                   cursor.getString(cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_TITLE)),
-                                  ""));
+                                  "","","",0));
         }
 
         if (mAdapter == null) {

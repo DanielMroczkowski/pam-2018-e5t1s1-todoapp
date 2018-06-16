@@ -4,15 +4,45 @@ public class Task {
     private int id;
     private String title;
     private String text;
+    private String date;
+    private String time;
+    private int alarm;
 
     public Task() {
     }
 
-    public Task(int id, String title, String text) {
+    public Task(int id, String title, String text, String date, String time, int alarm) {
 
         this.id = id;
         this.title = title;
         this.text = text;
+        this.date = date;
+        this.time = time;
+        this.alarm = alarm;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public int getAlarm() {
+        return alarm;
+    }
+
+    public void setAlarm(int alarm) {
+        this.alarm = alarm;
     }
 
     public int getId() { return id; }

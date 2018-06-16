@@ -21,12 +21,15 @@
         <activity
             android:name=".CalendarActivity"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.Children"></activity>
+            android:theme="@style/AppTheme.Children" />
         <activity
             android:name=".PositionEditActivity"
+            android:parentActivityName=".DetailsActivity"
+            android:theme="@style/AppTheme.Children" />
+        <activity
+            android:name=".DetailsActivity"
             android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.Children"></activity>
-        <activity android:name=".details"></activity>
+            android:theme="@style/AppTheme.Children" />
     </application>
 
 </manifest>
