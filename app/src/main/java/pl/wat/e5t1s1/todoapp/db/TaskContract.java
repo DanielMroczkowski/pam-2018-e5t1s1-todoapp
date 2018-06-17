@@ -1,5 +1,9 @@
 package pl.wat.e5t1s1.todoapp.db;
 import android.provider.BaseColumns;
+
+/**
+ * Definicja kolumn w tabeli aplikacji
+ */
 public class TaskContract {
 
 

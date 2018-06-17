@@ -81,6 +81,10 @@ public class PositionEditActivity extends AppCompatActivity{
         db.close();
     }
 
+    /**
+     * Zapis zmian do bazy po kliknięciu przycisku
+     * @param view
+     */
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void onSaveClick(View view) {
         SQLiteDatabase db = mHelper.getWritableDatabase();

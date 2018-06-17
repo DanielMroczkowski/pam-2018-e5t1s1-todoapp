@@ -4,7 +4,6 @@ import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -15,7 +14,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.AlarmClock;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GestureDetectorCompat;
@@ -26,7 +24,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -34,18 +31,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ArrayAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import pl.wat.e5t1s1.todoapp.db.TaskContract;
 import pl.wat.e5t1s1.todoapp.db.TaskDbHelper;
@@ -104,15 +98,13 @@ public class MainActivity extends AppCompatActivity {
 
         fab.setOnClickListener(new View.OnClickListener() {
 
+            /**
+             * Obsługa przycisku Dodaj zadanie
+             * @param view
+             */
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(View view) {
-                /**
-                 * Obsługa przycisku dodaj zadanie
-                 *
-                 * @param item
-                 * @return boolean
-                 */
                 LayoutInflater inflater = getLayoutInflater();
                 final View alertLayout = inflater.inflate(R.layout.add_dialog, null);
                 final EditText Title = alertLayout.findViewById(R.id.addTitle);
@@ -126,6 +118,11 @@ public class MainActivity extends AppCompatActivity {
                         .setTitle("Nowe zadanie")
                         .setView(alertLayout)
                         .setPositiveButton("Dodaj", new DialogInterface.OnClickListener() {
+                            /**
+                             * Zapis zadania do bazy danych
+                             * @param dialog
+                             * @param which
+                             */
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 SQLiteDatabase db = mHelper.getWritableDatabase();
@@ -169,6 +166,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * Obsługa pozycji na liście zadań
+         */
         ItemTouchHelper.SimpleCallback simpleCallBack = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT|ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -177,6 +177,16 @@ public class MainActivity extends AppCompatActivity {
 
             public static final float ALPHA_FULL = 1.0f;
 
+            /**
+             * Rysowanie podpowiedzi wykonywanej akcji przy przesuwaniu pozycji
+             * @param c
+             * @param recyclerView
+             * @param viewHolder
+             * @param dX
+             * @param dY
+             * @param actionState
+             * @param isCurrentlyActive
+             */
             public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
 
                 if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
@@ -225,10 +235,20 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
+            /**
+             * Konwertowanie dp do px
+             * @param dp
+             * @return
+             */
             private int convertDpToPx(int dp){
                 return Math.round(dp * (getResources().getDisplayMetrics().xdpi / DisplayMetrics.DENSITY_DEFAULT));
             }
 
+            /**
+             * Obsługa gestu swipe w obu kierunkach
+             * @param viewHolder
+             * @param direction
+             */
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
 
@@ -257,12 +277,21 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Obsługa gestów w MainActivity
+     * @param event
+     * @return
+     */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         this.gestureObject.onTouchEvent(event);
         return super.onTouchEvent(event);
     }
 
+    /**
+     * Obsługa button/spinnera z wyborem daty wyświetlanych zadań
+     * @param view
+     */
     public void onDateClick(View view) {
         String[] dateChArray = dateCh.split("-");
         int mYear = Integer.parseInt(dateChArray[0]);
@@ -271,6 +300,13 @@ public class MainActivity extends AppCompatActivity {
         DatePickerDialog dpd = new DatePickerDialog(this,
                 new DatePickerDialog.OnDateSetListener() {
 
+                    /**
+                     * Odświeżanie listy po wybraniu daty
+                     * @param view
+                     * @param year
+                     * @param monthOfYear
+                     * @param dayOfMonth
+                     */
                     @Override
                     public void onDateSet(DatePicker view, int year,
                                           int monthOfYear, int dayOfMonth) {
@@ -284,7 +320,18 @@ public class MainActivity extends AppCompatActivity {
         dpd.show();
     }
 
+    /**
+     * Definicja gestów
+     */
     class LearnGesture extends GestureDetector.SimpleOnGestureListener {
+        /**
+         * Przesunięcie od punktu do punktu na ekranie bez elemetów listy
+         * @param e1
+         * @param e2
+         * @param velocityX
+         * @param velocityY
+         * @return
+         */
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             if(e2.getX() > e1.getX()){
@@ -299,7 +346,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * Przeładowanie listy z pobraniem aktualnych pozycji w bazie danych
+     */
     private void updateUI() {
 
         mTaskListView.setAlpha(1.0f);
@@ -340,6 +389,10 @@ public class MainActivity extends AppCompatActivity {
         db.close();
     }
 
+    /**
+     * Usuwanie zakończonego zadania
+     * @param view
+     */
     public void deleteTask(View view) {
         //View parent = (View) view.getParent();
         //TextView taskTextView = parent.findViewById(R.id.task_title);
@@ -354,6 +407,10 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(MainActivity.this,"Zadanie wykonane! :)",Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Ustawianie alertu na konkretny dzień i godzinę
+     * @param cal
+     */
     private void setAlarm(Calendar cal){
 
         //Toast.makeText(MainActivity.this,"Alarm ustawiono na " + targetCal.getTime(),Toast.LENGTH_SHORT).show();
@@ -363,10 +420,16 @@ public class MainActivity extends AppCompatActivity {
         alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
     }
 
+    /**
+     * Usuwanie zaplanowanego alarmu
+     */
     private void unsetAlarm(){
         alarmManager.cancel(pendingIntent);
     }
 
+    /**
+     * Odświeżanie listy po powrocie z edycji pozycji
+     */
     @Override
     public void onResume()
     {  // After a pause OR at startup

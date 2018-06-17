@@ -85,6 +85,10 @@ public class DetailsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Obsługa przycisku Edytuj
+     * @param view
+     */
     public void onEditClick(View view) {
         Intent intent = new Intent(DetailsActivity.this, PositionEditActivity.class);
         intent.putExtra("taskId", taskId);

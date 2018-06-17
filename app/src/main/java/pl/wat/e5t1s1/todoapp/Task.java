@@ -1,5 +1,8 @@
 package pl.wat.e5t1s1.todoapp;
 
+/**
+ * Definicja zadania
+ */
 public class Task {
     private int id;
     private String title;

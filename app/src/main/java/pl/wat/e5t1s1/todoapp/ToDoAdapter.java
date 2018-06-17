@@ -15,10 +15,20 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
 
     protected ArrayList<Task> taskList;
 
+    /**
+     * RecyclerView adapter
+     * @param taskList
+     */
     public ToDoAdapter(ArrayList<Task> taskList) {
         this.taskList = taskList;
     }
 
+    /**
+     * ViewHolder dla RecyclerView
+     * @param parent
+     * @param viewType
+     * @return
+     */
     @NonNull
     @Override
     public ToDoAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -33,6 +43,11 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ViewHolder> {
         return viewHolder;
     }
 
+    /**
+     * Bindowanie pozycji na liście
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(@NonNull ToDoAdapter.ViewHolder holder, int position) {
         // 5. ustaw treści w wierszu 'position'

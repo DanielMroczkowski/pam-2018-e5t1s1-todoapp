@@ -14,6 +14,11 @@ import android.support.v4.app.NotificationCompat;
 
 public class AlarmReceiver extends BroadcastReceiver {
 
+    /**
+     * Metoda uruchamiana przy odebraniu alertu
+     * @param context
+     * @param intent
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
         Vibrator v = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
@@ -27,6 +32,11 @@ public class AlarmReceiver extends BroadcastReceiver {
 
         }
 
+    /**
+     * Wysłanie powiadomienia do systemu
+     * @param context
+     * @param message
+     */
     public void Notification(Context context, String message) {
         // Set Notification Title
 
