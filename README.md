@@ -5,7 +5,7 @@
 Projekt zaliczeniowy z przedmiotu Programowanie aplikacji mobilnych - 2018.
 TODOApp - organizer przedstawiający listę zadań oraz ułatwiający planowanie na system Android.
 
-## Programy
+## Zależność
 
 * [Android Studio](https://developer.android.com/studio/index.html)
 * [SQLite](https://www.sqlite.org/index.html)
