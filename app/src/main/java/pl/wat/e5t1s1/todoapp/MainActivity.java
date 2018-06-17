@@ -6,6 +6,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -17,6 +21,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -127,18 +132,72 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
 
+            public static final float ALPHA_FULL = 1.0f;
+
+            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+
+                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+
+                    View itemView = viewHolder.itemView;
+
+                    Paint p = new Paint();
+                    Bitmap icon;
+
+                    if (dX > 0) {
+
+                        //color : left side (swiping towards right)
+                        p.setARGB(255, 254, 209, 72);
+                        c.drawRect((float) itemView.getLeft(), (float) itemView.getTop(), dX,
+                                (float) itemView.getBottom(), p);
+
+                        // icon : left side (swiping towards right)
+                        icon = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.ic_edit);
+                        c.drawBitmap(icon,
+                                (float) itemView.getLeft() + convertDpToPx(16),
+                                (float) itemView.getTop() + ((float) itemView.getBottom() - (float) itemView.getTop() - icon.getHeight())/2,
+                                p);
+                    } else {
+
+                        //color : right side (swiping towards left)
+                        p.setARGB(255, 186, 218, 85);
+
+                        c.drawRect((float) itemView.getRight() + dX, (float) itemView.getTop(),
+                                (float) itemView.getRight(), (float) itemView.getBottom(), p);
+
+                        //icon : left side (swiping towards right)
+                        icon = BitmapFactory.decodeResource(getApplicationContext().getResources(), R.drawable.ic_done);
+                        c.drawBitmap(icon,
+                                (float) itemView.getRight() - convertDpToPx(16) - icon.getWidth(),
+                                (float) itemView.getTop() + ((float) itemView.getBottom() - (float) itemView.getTop() - icon.getHeight())/2,
+                                p);
+                    }
+
+                    // Fade out the view when it is swiped out of the parent
+                    final float alpha = ALPHA_FULL - Math.abs(dX) / (float) viewHolder.itemView.getWidth();
+                    viewHolder.itemView.setAlpha(alpha);
+                    viewHolder.itemView.setTranslationX(dX);
+
+                } else {
+                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+                }
+            }
+
+            private int convertDpToPx(int dp){
+                return Math.round(dp * (getResources().getDisplayMetrics().xdpi / DisplayMetrics.DENSITY_DEFAULT));
+            }
+
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
 
                 //Toast.makeText(MainActivity.this,"swipeniete"+direction,Toast.LENGTH_SHORT).show();
-                if(direction==8){
+                if(direction==ItemTouchHelper.RIGHT){
                     TextView taskIdHolder = viewHolder.itemView.findViewById(R.id.task_id);
 
                     Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
                     int taskId = Integer.parseInt(taskIdHolder.getText().toString());
                     intent.putExtra("taskId", taskId);
                     startActivity(intent);
-                }else if(direction==4){
+                }else if(direction==ItemTouchHelper.LEFT){
                     deleteTask(viewHolder.itemView);
                 }
 
