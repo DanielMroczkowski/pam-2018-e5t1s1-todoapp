@@ -1,7 +1,10 @@
 package pl.wat.e5t1s1.todoapp;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,6 +15,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.AlarmClock;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GestureDetectorCompat;
@@ -61,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
     SimpleDateFormat datePattern = new SimpleDateFormat("yyyy-MM-dd");
     String dateNow = datePattern.format(new Date());
     String dateCh = dateNow;
+
+    final static int RQS_1 = 1;
 
     String where;
 
@@ -125,6 +131,30 @@ public class MainActivity extends AppCompatActivity {
                                 values.put(TaskContract.TaskEntry.COL_TASK_DATE, Date.getYear()+"-"+String.format("%02d",Date.getMonth()+1)+"-"+String.format("%02d", Date.getDayOfMonth()));
                                 values.put(TaskContract.TaskEntry.COL_TASK_TIME, String.format("%02d",Time.getHour())+":"+String.format("%02d", Time.getMinute()));
                                 values.put(TaskContract.TaskEntry.COL_TASK_ALARM, (Alarm.isChecked()) ? 1 : 0);
+                                if(Alarm.isChecked()){
+                                    Calendar current = Calendar.getInstance();
+
+                                    Calendar cal = Calendar.getInstance();
+                                    cal.set(Date.getYear(),
+                                            Date.getMonth(),
+                                            Date.getDayOfMonth(),
+                                            Time.getHour(),
+                                            Time.getMinute(),
+                                            00);
+
+                                    if(cal.compareTo(current) <= 0){
+                                        //The set Date/Time already passed
+                                        Toast.makeText(getApplicationContext(),
+                                                "Nieprawidłowa godzina",
+                                                Toast.LENGTH_LONG).show();
+                                    }else{
+                                        setAlarm(Date.getYear(),
+                                                Date.getMonth(),
+                                                Date.getDayOfMonth(),
+                                                Time.getHour(),
+                                                Time.getMinute());
+                                    }
+                                }
                                 db.insertWithOnConflict(TaskContract.TaskEntry.TABLE,
                                         null,
                                         values,
@@ -322,6 +352,18 @@ public class MainActivity extends AppCompatActivity {
         db.close();
         updateUI();
         Toast.makeText(MainActivity.this,"Zadanie wykonane! :)",Toast.LENGTH_SHORT).show();
+    }
+
+    private void setAlarm(int Year, int Day, int Month, int Hour, int Minute){
+
+        //Toast.makeText(MainActivity.this,"Alarm ustawiono na " + targetCal.getTime(),Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(AlarmClock.ACTION_SET_ALARM);
+        intent.putExtra(AlarmClock.EXTRA_HOUR,Hour);
+        intent.putExtra(AlarmClock.EXTRA_MINUTES,Minute);
+        //intent.putExtra(AlarmClock.EXTRA_DAYS,Day);
+        //intent.putExtra(AlarmClock.)
+        startActivity(intent);
     }
 
     @Override

@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="pl.wat.e5t1s1.todoapp">
 
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -30,6 +32,9 @@
             android:name=".DetailsActivity"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.Children" />
+
+        <!-- Register the Alarm Receiver -->
+        <receiver android:name=".AlarmReciever"/>
     </application>
 
 </manifest>
