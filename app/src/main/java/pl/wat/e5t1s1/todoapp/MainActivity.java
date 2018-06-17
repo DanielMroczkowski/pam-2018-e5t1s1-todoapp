@@ -189,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
 
+                viewHolder.itemView.setAlpha(ALPHA_FULL);
                 //Toast.makeText(MainActivity.this,"swipeniete"+direction,Toast.LENGTH_SHORT).show();
                 if(direction==ItemTouchHelper.RIGHT){
                     TextView taskIdHolder = viewHolder.itemView.findViewById(R.id.task_id);
@@ -197,11 +198,11 @@ public class MainActivity extends AppCompatActivity {
                     int taskId = Integer.parseInt(taskIdHolder.getText().toString());
                     intent.putExtra("taskId", taskId);
                     startActivity(intent);
+                    updateUI();
                 }else if(direction==ItemTouchHelper.LEFT){
                     deleteTask(viewHolder.itemView);
+                    //updateUI();
                 }
-
-                updateUI();
 
             }
         };
@@ -242,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
         Cursor cursor = db.query(TaskContract.TaskEntry.TABLE,
                 new String[]{TaskContract.TaskEntry._ID, TaskContract.TaskEntry.COL_TASK_TITLE},
                 null, null, null, null, null);
+        cursor.moveToFirst();
         while (cursor.moveToNext()) {
             //int idx = cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_TITLE);
             //int idtext = cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_TITLE);
@@ -275,7 +277,6 @@ public class MainActivity extends AppCompatActivity {
                 TaskContract.TaskEntry._ID + "=" + task_id,
                 null);
         db.close();
-        updateUI();
     }
 
     @Override

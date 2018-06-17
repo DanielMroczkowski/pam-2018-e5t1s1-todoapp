@@ -28,6 +28,13 @@ public class DetailsActivity extends AppCompatActivity {
     Switch Alarm;
 
     String where;
+    Cursor cursor;
+    String[] columns = {TaskContract.TaskEntry._ID,
+            TaskContract.TaskEntry.COL_TASK_TITLE,
+            TaskContract.TaskEntry.COL_TASK_TEXT,
+            TaskContract.TaskEntry.COL_TASK_DATE,
+            TaskContract.TaskEntry.COL_TASK_TIME,
+            TaskContract.TaskEntry.COL_TASK_ALARM};
 
     int taskId = -1; // or other values
 
@@ -59,16 +66,10 @@ public class DetailsActivity extends AppCompatActivity {
             taskId = b.getInt("taskId");
         //Toast.makeText(this,"swipeniete"+taskId,Toast.LENGTH_SHORT).show();
 
-        String[] columns = {TaskContract.TaskEntry._ID,
-                TaskContract.TaskEntry.COL_TASK_TITLE,
-                TaskContract.TaskEntry.COL_TASK_TEXT,
-                TaskContract.TaskEntry.COL_TASK_DATE,
-                TaskContract.TaskEntry.COL_TASK_TIME,
-                TaskContract.TaskEntry.COL_TASK_ALARM};
 //        String[] columns = {TaskContract.TaskEntry._ID,
 //                TaskContract.TaskEntry.COL_TASK_TITLE};
         where = TaskContract.TaskEntry._ID + "=" + taskId;
-        Cursor cursor = db.query(TaskContract.TaskEntry.TABLE, columns, where, null, null, null, null);
+        cursor = db.query(TaskContract.TaskEntry.TABLE, columns, where, null, null, null, null);
         if(cursor != null && cursor.moveToFirst()) {
             Title.setText(cursor.getString(cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_TITLE)));
             Text.setText(cursor.getString(cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_TEXT)));
@@ -90,4 +91,5 @@ public class DetailsActivity extends AppCompatActivity {
         this.finish();
         startActivity(intent);
     }
+
 }
