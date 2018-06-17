@@ -86,8 +86,8 @@ public class PositionEditActivity extends AppCompatActivity{
         ContentValues values = new ContentValues();
         values.put(TaskContract.TaskEntry.COL_TASK_TITLE, editTitle.getText().toString());
         values.put(TaskContract.TaskEntry.COL_TASK_TEXT, editText.getText().toString());
-        values.put(TaskContract.TaskEntry.COL_TASK_DATE, editDate.getYear()+"-"+editDate.getMonth()+"-"+editDate.getDayOfMonth());
-        values.put(TaskContract.TaskEntry.COL_TASK_TIME, editTime.getHour()+":"+editTime.getMinute());
+        values.put(TaskContract.TaskEntry.COL_TASK_DATE, editDate.getYear()+"-"+String.format("%02d",editDate.getMonth())+"-"+String.format("%02d",editDate.getDayOfMonth()));
+        values.put(TaskContract.TaskEntry.COL_TASK_TIME, String.format("%02d",editTime.getHour())+":"+String.format("%02d",editTime.getMinute()));
         values.put(TaskContract.TaskEntry.COL_TASK_ALARM, (editAlarm.isChecked()) ? 1 : 0);
         db.updateWithOnConflict(TaskContract.TaskEntry.TABLE,
                                 values,

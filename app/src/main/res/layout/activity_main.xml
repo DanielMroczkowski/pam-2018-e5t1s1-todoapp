@@ -15,8 +15,18 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
+            android:background="@color/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        <Button
+            android:id="@+id/dateSpinner"
+            style="@android:style/Widget.Holo.Spinner"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:onClick="onDateClick"
+            android:backgroundTint="#FFFFFF"
+            android:textAlignment="center"
+            android:textSize="16dp" />
 
     </android.support.design.widget.AppBarLayout>
 
@@ -33,6 +43,6 @@
         layout="@layout/content_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp" />
+        android:layout_marginTop="98dp" />
 
 </android.support.design.widget.CoordinatorLayout>

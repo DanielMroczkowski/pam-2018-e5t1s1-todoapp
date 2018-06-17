@@ -37,7 +37,10 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import pl.wat.e5t1s1.todoapp.db.TaskContract;
@@ -51,8 +54,15 @@ public class MainActivity extends AppCompatActivity {
 
     ItemTouchHelper itemTouchHelper;
     private GestureDetectorCompat gestureObject;
+    Button dateButton;
 
     private TaskDbHelper mHelper;
+
+    SimpleDateFormat datePattern = new SimpleDateFormat("yyyy-MM-dd");
+    String dateNow = datePattern.format(new Date());
+    String dateCh = dateNow;
+
+    String where;
 
     /**
      * Utworzenie TAGu dla aktywności MainActivity,
@@ -69,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        dateButton = findViewById(R.id.dateSpinner);
+        dateButton.setText(dateNow);
 
         mHelper = new TaskDbHelper(MainActivity.this);
         mTaskListView = findViewById(R.id.lista);
@@ -109,8 +122,8 @@ public class MainActivity extends AppCompatActivity {
                                 ContentValues values = new ContentValues();
                                 values.put(TaskContract.TaskEntry.COL_TASK_TITLE, Title.getText().toString());
                                 values.put(TaskContract.TaskEntry.COL_TASK_TEXT, Text.getText().toString());
-                                values.put(TaskContract.TaskEntry.COL_TASK_DATE, Date.getYear()+"-"+Date.getMonth()+"-"+Date.getDayOfMonth());
-                                values.put(TaskContract.TaskEntry.COL_TASK_TIME, Time.getHour()+":"+Time.getMinute());
+                                values.put(TaskContract.TaskEntry.COL_TASK_DATE, Date.getYear()+"-"+String.format("%02d",Date.getMonth()+1)+"-"+String.format("%02d", Date.getDayOfMonth()));
+                                values.put(TaskContract.TaskEntry.COL_TASK_TIME, String.format("%02d",Time.getHour())+":"+String.format("%02d", Time.getMinute()));
                                 values.put(TaskContract.TaskEntry.COL_TASK_ALARM, (Alarm.isChecked()) ? 1 : 0);
                                 db.insertWithOnConflict(TaskContract.TaskEntry.TABLE,
                                         null,
@@ -220,11 +233,34 @@ public class MainActivity extends AppCompatActivity {
         return super.onTouchEvent(event);
     }
 
+    public void onDateClick(View view) {
+        String[] dateChArray = dateCh.split("-");
+        int mYear = Integer.parseInt(dateChArray[0]);
+        int mMonth = Integer.parseInt(dateChArray[1])-1;
+        int mDay = Integer.parseInt(dateChArray[2]);
+        DatePickerDialog dpd = new DatePickerDialog(this,
+                new DatePickerDialog.OnDateSetListener() {
+
+                    @Override
+                    public void onDateSet(DatePicker view, int year,
+                                          int monthOfYear, int dayOfMonth) {
+                        dateCh = year + "-" + String.format("%02d",(monthOfYear + 1)) + "-" + String.format("%02d",dayOfMonth);
+                        dateButton.setText(dateCh);
+                        where = TaskContract.TaskEntry.COL_TASK_DATE + "='" + dateCh+"'";
+                        updateUI();
+
+                    }
+                }, mYear, mMonth, mDay);
+        dpd.show();
+    }
+
     class LearnGesture extends GestureDetector.SimpleOnGestureListener {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             if(e2.getX() > e1.getX()){
-                startActivity(new Intent(MainActivity.this, CalendarActivity.class));
+                Intent intent = new Intent(MainActivity.this, CalendarActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intent);
             }else if(e1.getX()>e2.getX()){
 
             }
@@ -236,15 +272,22 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateUI() {
 
+        mTaskListView.setAlpha(1.0f);
+
         ArrayList<Task> taskList = new ArrayList<>();
 
         SQLiteDatabase db = mHelper.getReadableDatabase();
 
-        Cursor cursor = db.query(TaskContract.TaskEntry.TABLE,
-                new String[]{TaskContract.TaskEntry._ID, TaskContract.TaskEntry.COL_TASK_TITLE},
-                null, null, null, null, null);
-        cursor.moveToFirst();
+        where = TaskContract.TaskEntry.COL_TASK_DATE + "='" + dateCh+"'";
+
+        String[] columns = {TaskContract.TaskEntry._ID,
+                TaskContract.TaskEntry.COL_TASK_TITLE,
+                TaskContract.TaskEntry.COL_TASK_DATE};
+
+        Cursor cursor = db.query(TaskContract.TaskEntry.TABLE, columns,
+                where, null, null, null, null);
         while (cursor.moveToNext()) {
+            //Toast.makeText(MainActivity.this,cursor.getString(cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_TITLE)),Toast.LENGTH_SHORT).show();
             //int idx = cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_TITLE);
             //int idtext = cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_TITLE);
             taskList.add(new Task(cursor.getInt(cursor.getColumnIndex(TaskContract.TaskEntry._ID)),
@@ -277,6 +320,8 @@ public class MainActivity extends AppCompatActivity {
                 TaskContract.TaskEntry._ID + "=" + task_id,
                 null);
         db.close();
+        updateUI();
+        Toast.makeText(MainActivity.this,"Zadanie wykonane! :)",Toast.LENGTH_SHORT).show();
     }
 
     @Override
