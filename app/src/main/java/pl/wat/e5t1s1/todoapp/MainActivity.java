@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     Button dateButton;
 
     AlarmManager alarmManager;
+    PendingIntent pendingIntent;
 
     private TaskDbHelper mHelper;
 
@@ -68,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
     String dateNow = datePattern.format(new Date());
     String dateCh = dateNow;
 
-    final static int RQS_1 = 1;
 
     String where;
 
@@ -149,14 +149,10 @@ public class MainActivity extends AppCompatActivity {
                                     if(cal.compareTo(current) <= 0){
                                         //The set Date/Time already passed
                                         Toast.makeText(getApplicationContext(),
-                                                "Nieprawidłowa godzina",
+                                                "Nieprawidłowa godzina, alarm został pominięty",
                                                 Toast.LENGTH_LONG).show();
                                     }else{
-                                        setAlarm(Date.getYear(),
-                                                Date.getMonth(),
-                                                Date.getDayOfMonth(),
-                                                Time.getHour(),
-                                                Time.getMinute());
+                                        setAlarm(cal);
                                     }
                                 }
                                 db.insertWithOnConflict(TaskContract.TaskEntry.TABLE,
@@ -358,16 +354,17 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(MainActivity.this,"Zadanie wykonane! :)",Toast.LENGTH_SHORT).show();
     }
 
-    private void setAlarm(int Year, int Day, int Month, int Hour, int Minute){
+    private void setAlarm(Calendar cal){
 
         //Toast.makeText(MainActivity.this,"Alarm ustawiono na " + targetCal.getTime(),Toast.LENGTH_SHORT).show();
 
-        Intent intent = new Intent(AlarmClock.ACTION_SET_ALARM);
-        intent.putExtra(AlarmClock.EXTRA_HOUR,Hour);
-        intent.putExtra(AlarmClock.EXTRA_MINUTES,Minute);
-        //intent.putExtra(AlarmClock.EXTRA_DAYS,Day);
-        //intent.putExtra(AlarmClock.)
-        startActivity(intent);
+        Intent alarmIntent = new Intent(MainActivity.this,AlarmReceiver.class);
+        pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, alarmIntent, pendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+    }
+
+    private void unsetAlarm(){
+        alarmManager.cancel(pendingIntent);
     }
 
     @Override

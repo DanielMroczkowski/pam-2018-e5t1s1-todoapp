@@ -3,6 +3,7 @@
     package="pl.wat.e5t1s1.todoapp">
 
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -34,7 +35,8 @@
             android:theme="@style/AppTheme.Children" />
 
         <!-- Register the Alarm Receiver -->
-        <receiver android:name=".AlarmReciever"/>
+        <receiver android:name=".AlarmReceiver"/>
+
     </application>
 
 </manifest>

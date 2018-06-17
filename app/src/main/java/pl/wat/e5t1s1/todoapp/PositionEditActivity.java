@@ -47,6 +47,7 @@ public class PositionEditActivity extends AppCompatActivity{
         editAlarm = findViewById(R.id.swAlarm);
 
         editTime.setIs24HourView(true);
+        editAlarm.setClickable(false);
 
         mHelper = new TaskDbHelper(PositionEditActivity.this);
         SQLiteDatabase db = mHelper.getReadableDatabase();
