@@ -74,7 +74,7 @@ public class DetailsActivity extends AppCompatActivity {
             Title.setText(cursor.getString(cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_TITLE)));
             Text.setText(cursor.getString(cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_TEXT)));
             String[] data = (cursor.getString(cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_DATE))).split("-");
-            Date.updateDate(Integer.parseInt(data[0]),Integer.parseInt(data[1]),Integer.parseInt(data[2]));
+            Date.updateDate(Integer.parseInt(data[0]),Integer.parseInt(data[1])-1,Integer.parseInt(data[2]));
             String[] time = (cursor.getString(cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_TIME))).split(":");
             Time.setHour(Integer.parseInt(time[0]));
             Time.setMinute(Integer.parseInt(time[1]));

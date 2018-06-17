@@ -60,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
     private GestureDetectorCompat gestureObject;
     Button dateButton;
 
+    AlarmManager alarmManager;
+
     private TaskDbHelper mHelper;
 
     SimpleDateFormat datePattern = new SimpleDateFormat("yyyy-MM-dd");
@@ -88,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
 
         dateButton = findViewById(R.id.dateSpinner);
         dateButton.setText(dateNow);
+
+        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         mHelper = new TaskDbHelper(MainActivity.this);
         mTaskListView = findViewById(R.id.lista);

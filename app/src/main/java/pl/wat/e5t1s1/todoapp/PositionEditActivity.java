@@ -71,7 +71,7 @@ public class PositionEditActivity extends AppCompatActivity{
             editTitle.setText(cursor.getString(cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_TITLE)));
             editText.setText(cursor.getString(cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_TEXT)));
             String[] data = (cursor.getString(cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_DATE))).split("-");
-            editDate.updateDate(Integer.parseInt(data[0]),Integer.parseInt(data[1]),Integer.parseInt(data[2]));
+            editDate.updateDate(Integer.parseInt(data[0]),Integer.parseInt(data[1])-1,Integer.parseInt(data[2]));
             String[] time = (cursor.getString(cursor.getColumnIndex(TaskContract.TaskEntry.COL_TASK_TIME))).split(":");
             editTime.setHour(Integer.parseInt(time[0]));
             editTime.setMinute(Integer.parseInt(time[1]));
@@ -86,7 +86,7 @@ public class PositionEditActivity extends AppCompatActivity{
         ContentValues values = new ContentValues();
         values.put(TaskContract.TaskEntry.COL_TASK_TITLE, editTitle.getText().toString());
         values.put(TaskContract.TaskEntry.COL_TASK_TEXT, editText.getText().toString());
-        values.put(TaskContract.TaskEntry.COL_TASK_DATE, editDate.getYear()+"-"+String.format("%02d",editDate.getMonth())+"-"+String.format("%02d",editDate.getDayOfMonth()));
+        values.put(TaskContract.TaskEntry.COL_TASK_DATE, editDate.getYear()+"-"+String.format("%02d",editDate.getMonth()+1)+"-"+String.format("%02d",editDate.getDayOfMonth()));
         values.put(TaskContract.TaskEntry.COL_TASK_TIME, String.format("%02d",editTime.getHour())+":"+String.format("%02d",editTime.getMinute()));
         values.put(TaskContract.TaskEntry.COL_TASK_ALARM, (editAlarm.isChecked()) ? 1 : 0);
         db.updateWithOnConflict(TaskContract.TaskEntry.TABLE,
